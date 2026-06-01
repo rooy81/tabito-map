@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>旅と北海道MAP｜北海道旅行をもう迷わない・もう悩まない</title>
+  <meta name="description" content="北海道2000箇所以上の厳選スポットをまとめたGoogleマップで使えるオリジナルMAP。グルメ・観光・温泉すべてジャンル別で収録。1,299円の買い切り！" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal:    #1dc8cc;
+      --teal-d:  #15a5a8;
+      --teal-bg: #e6f9fa;
+      --text:    #222;
+      --sub:     #666;
+      --light:   #f8f8f8;
+      --border:  #e5e5e5;
+      --red:     #e53935;
+      --yellow:  #ffb300;
+      --font: 'Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: #fff; color: var(--text); line-height: 1.75; -webkit-font-smoothing: antialiased; }
+    a { color: var(--teal); text-decoration: none; }
+    a:hover { opacity: 0.8; }
+
+    /* ── LAYOUT ── */
+    .w { max-width: 600px; margin: 0 auto; padding: 0 20px; }
+
+    /* ── IMAGES ── */
+    /* 画像は images/ フォルダに入れてください（ガイド参照） */
+    .img-slot {
+      width: 100%;
+      border-radius: 10px;
+      display: block;
+      object-fit: cover;
+    }
+    /* 画像が未設定のときの仮表示 */
+    .img-placeholder {
+      width: 100%;
+      border-radius: 10px;
+      background: var(--light);
+      border: 2px dashed var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #bbb;
+      font-size: 13px;
+      padding: 32px 20px;
+      text-align: center;
+    }
+    .img-placeholder .icon { font-size: 36px; }
+
+    /* ── CTA BUTTON ── */
+    .btn-cta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--teal);
+      color: #fff !important;
+      font-size: 18px;
+      font-weight: 800;
+      padding: 20px 32px;
+      border-radius: 50px;
+      letter-spacing: 0.04em;
+      line-height: 1.3;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      text-align: center;
+      cursor: pointer;
+      border: none;
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .btn-cta:hover { background: var(--teal-d); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(29,200,204,.35); }
+    .btn-cta small { display: block; font-size: 12px; font-weight: 400; opacity: .85; margin-top: 2px; }
+    .cta-wrap { display: flex; justify-content: center; padding: 32px 20px; }
+
+    /* ── STICKY CTA BAR ── */
+    .sticky-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(255,255,255,.97);
+      border-top: 1px solid var(--border);
+      padding: 12px 20px;
+      z-index: 200;
+      display: flex;
+      justify-content: center;
+      box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+      transform: translateY(100%);
+      transition: transform .3s ease;
+    }
+    .sticky-bar.show { transform: translateY(0); }
+    .sticky-bar .btn-cta { font-size: 16px; padding: 16px 28px; max-width: 500px; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      background: #0d2b42;
+    }
+    /* ▼▼▼ hero-bg.jpg を images/ に入れると自動で表示されます ▼▼▼ */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      opacity: .55;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(10,30,50,.3) 0%, rgba(10,30,50,.65) 100%);
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      padding: 72px 24px 80px;
+      color: #fff;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: var(--teal);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      padding: 5px 14px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+    .hero h1 {
+      font-size: clamp(30px,8vw,48px);
+      font-weight: 900;
+      line-height: 1.25;
+      letter-spacing: .02em;
+      margin-bottom: 18px;
+      text-shadow: 0 2px 12px rgba(0,0,0,.5);
+    }
+    .hero-sub {
+      font-size: 14px;
+      line-height: 1.85;
+      opacity: .92;
+      max-width: 360px;
+      margin: 0 auto 32px;
+    }
+
+    /* ── TRUST BAND ── */
+    .trust-band {
+      background: var(--text);
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      overflow: hidden;
+    }
+    .trust-item {
+      flex: 1;
+      text-align: center;
+      padding: 4px 8px;
+      border-right: 1px solid rgba(255,255,255,.15);
+    }
+    .trust-item:last-child { border-right: none; }
+    .trust-num {
+      font-size: clamp(20px,5vw,28px);
+      font-weight: 900;
+      color: var(--teal);
+      letter-spacing: -.01em;
+      line-height: 1.1;
+    }
+    .trust-label { font-size: 10px; opacity: .6; margin-top: 3px; letter-spacing: .05em; }
+
+    /* ── SECTION ── */
+    .sec { padding: 56px 0; }
+    .sec-bg { background: var(--light); }
+    .sec-teal { background: var(--teal-bg); }
+    hr.div { border: none; border-top: 1px solid var(--border); }
+
+    /* ── ICON HEADING ── */
+    .icon-h {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .icon-h .av {
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      background: var(--teal);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+    }
+    .icon-h h2 { font-size: 20px; font-weight: 800; line-height: 1.4; }
+
+    /* ── PAIN QUOTES ── */
+    .pain-q {
+      background: #fff;
+      border-left: 4px solid var(--teal);
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    }
+
+    /* ── PAIN CHECKLIST ── */
+    .check-list { list-style: none; }
+    .check-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 11px 0;
+      border-bottom: 1px dashed var(--border);
+      font-size: 14px;
+    }
+    .check-list li:last-child { border-bottom: none; }
+    .check-list .x { color: var(--red); font-size: 18px; flex-shrink: 0; line-height: 1.5; }
+
+    /* ── SOLUTION BOX ── */
+    .solution-box {
+      background: #fff;
+      border: 2.5px solid var(--teal);
+      border-radius: 14px;
+      padding: 28px 20px;
+      text-align: center;
+      margin: 28px 0 0;
+    }
+    .solution-box .map-emoji { font-size: 52px; margin-bottom: 12px; }
+    .solution-box p { font-size: 17px; font-weight: 700; line-height: 1.6; }
+    .solution-box p strong { color: var(--teal-d); font-size: 20px; }
+
+    /* ── FEATURE ── */
+    .feat { margin-bottom: 52px; }
+    .feat:last-child { margin-bottom: 0; }
+    .feat-num {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .feat-num .n {
+      width: 32px; height: 32px;
+      background: var(--teal);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .feat-num h3 { font-size: 19px; font-weight: 800; }
+    .feat p { font-size: 14px; color: var(--sub); line-height: 1.85; margin: 10px 0 16px; }
+
+    /* ── MAP POINTS LIST ── */
+    .points-box {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 16px 0 20px;
+      background: #fff;
+    }
+    .points-box .p-head {
+      background: var(--teal);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      padding: 8px 14px;
+      text-transform: uppercase;
+    }
+    .p-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .p-row:last-child { border-bottom: none; }
+    .p-row .em { font-size: 20px; flex-shrink: 0; }
+    .p-row .t { font-weight: 600; }
+    .p-row .s { font-size: 11px; color: var(--sub); }
+
+    /* ── REVIEWS ── */
+    .review-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+
+    /* ── HOW TO ── */
+    .how-step { margin-bottom: 44px; }
+    .how-label { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .how-label .n2 { font-size: 32px; font-weight: 900; color: var(--teal); line-height: 1; }
+    .how-label h3 { font-size: 18px; font-weight: 800; }
+    .how-step p { font-size: 14px; color: var(--sub); line-height: 1.85; }
+    .how-step a { color: var(--teal); font-weight: 700; }
+    .screen-mock {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin: 14px 0;
+    }
+    .screen-mock .mock-label { font-size: 11px; color: var(--sub); margin-bottom: 6px; }
+    .screen-mock .mock-price { font-size: 26px; font-weight: 900; color: var(--text); }
+
+    /* ── FAQ ── */
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      text-align: left;
+      padding: 18px 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      font-family: inherit;
+    }
+    .faq-q .faq-icon {
+      flex-shrink: 0;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--teal);
+      color: var(--teal);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 300;
+      transition: transform .25s;
+      margin-top: 2px;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-a {
+      display: none;
+      padding: 0 8px 18px;
+      font-size: 14px;
+      color: var(--sub);
+      line-height: 1.85;
+    }
+    .faq-item.open .faq-a { display: block; }
+
+    /* ── GUARANTEE ── */
+    .guarantee {
+      background: #fffbf0;
+      border: 2px solid var(--yellow);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 24px 0 0;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .guarantee .g-icon { font-size: 32px; flex-shrink: 0; }
+    .guarantee h4 { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
+    .guarantee p { font-size: 13px; color: var(--sub); line-height: 1.75; }
+
+    /* ── PRICE ── */
+    .price-section {
+      background: var(--light);
+      padding: 64px 0;
+      text-align: center;
+    }
+    .price-label { font-size: 15px; color: var(--sub); margin-bottom: 8px; }
+    .price-big {
+      font-size: clamp(52px,15vw,80px);
+      font-weight: 900;
+      color: var(--red);
+      line-height: 1;
+      letter-spacing: -.02em;
+    }
+    .price-big sup { font-size: .4em; vertical-align: top; margin-top: .3em; }
+    .price-note { font-size: 13px; color: var(--sub); margin: 10px 0 28px; }
+    .price-features {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 300px;
+      margin: 0 auto 28px;
+      text-align: left;
+    }
+    .price-features li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .price-features .ck { color: var(--teal); font-size: 16px; }
+
+    /* ── MESSAGE ── */
+    .msg-body { font-size: 14px; line-height: 1.9; margin: 20px 0 24px; }
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 6px;
+      margin-bottom: 28px;
+    }
+    /* ▼▼▼ photo-1.jpg 〜 photo-6.jpg を images/ に入れると自動表示 ▼▼▼ */
+    .photo-cell {
+      aspect-ratio: 1;
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--light);
+    }
+    .photo-cell img { width:100%; height:100%; object-fit: cover; display:block; }
+    .photo-cell .ph { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:28px; color:#ccc; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #2d2d2d;
+      color: rgba(255,255,255,.8);
+      text-align: center;
+      padding: 48px 20px 56px;
+    }
+    /* ▼▼▼ avatar.jpg を images/ に入れると自動表示 ▼▼▼ */
+    .footer-av {
+      width: 88px; height: 88px;
+      border-radius: 50%;
+      background: #444;
+      margin: 0 auto 14px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+    }
+    .footer-av img { width:100%; height:100%; object-fit:cover; }
+    .footer-handle { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .footer-handle a { color: var(--teal); }
+    .footer-links { margin-top: 20px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { font-size: 12px; color: rgba(255,255,255,.4); }
+    .footer-copy { font-size: 11px; color: rgba(255,255,255,.25); margin-top: 16px; }
+
+    /* ── UTILS ── */
+    .tc { text-align: center; }
+    .mt8 { margin-top: 8px; }
+    .mt16 { margin-top: 16px; }
+    .mt24 { margin-top: 24px; }
+    .sub-text { font-size: 14px; color: var(--sub); line-height: 1.85; }
+
+    @media (max-width:420px) {
+      .hero h1 { font-size: 28px; }
+      .trust-num { font-size: 20px; }
+      .btn-cta { font-size: 16px; padding: 18px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- =====================================================
+     スティッキーCTA（スクロールで出てくる下部バー）
+===================================================== -->
+<div class="sticky-bar" id="stickyBar">
+  <a href="#price" class="btn-cta">
+    今すぐMAPをゲットする！ 🙋
+    <small>¥1,299 買い切り・追加料金なし</small>
+  </a>
+</div>
+
+
+<!-- =====================================================
+     ① HERO ── 一番上の全面ビジュアル
+     　　画像ファイル：images/hero-bg.jpg
+===================================================== -->
+<section class="hero">
+  <!-- ▼ 画像を入れたら src を有効にする ▼ -->
+<img src="images/hero-bg.jpg" alt="北海道の風景" class="hero-bg">
+
+  <!-- 画像が未設定の間はグラデーション背景が表示されます -->
+  <div class="hero-overlay"></div>
+
+  <div class="hero-inner">
+    <div class="hero-badge">📍 旅と北海道MAP</div>
+    <h1>北海道旅<br>もう迷わない<br>もう悩まない</h1>
+    <p class="hero-sub">
+      北海道の厳選されたスポットだけを紹介した唯一無二のMAP。<br>
+      これなしでの北海道旅にはもう戻れない。
+    </p>
+    <a href="#price" class="btn-cta" style="max-width:320px;">
+      MAPを購入する（¥1,299）
+    </a>
+    <div style="margin-top:12px;">
+      <a href="https://line.me/R/oaMessage/@152kvhuh/?お試しMAP" target="_blank" rel="noopener"
+         style="display:inline-block;color:rgba(255,255,255,.75);font-size:13px;border:1px solid rgba(255,255,255,.35);padding:9px 24px;border-radius:99px;text-decoration:none;background:rgba(255,255,255,.08);">
+        🔍 まずは無料でお試し版を見る
+      </a>
+      <p style="font-size:11px;color:rgba(255,255,255,.4);margin-top:7px;">※ LINEが開き「お試しMAP」が自動入力されます。送信するだけ。</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- =====================================================
+     ② 悩みの共感セクション
+===================================================== -->
+<section class="sec">
+  <div class="w">
+
+    <div class="icon-h">
+      <div class="av">🙋</div>
+      <h2>「さて、<br>どこに行こう…」<br>のお悩み解消</h2>
+    </div>
+
+    <p class="sub-text">旅行先でスポット探し、迷っちゃいますよね。</p>
+
+    <div class="mt16">
+      <div class="pain-q">「北海道に旅行するんだけど、大きすぎてどこに行けばいいか分からない…」</div>
+      <div class="pain-q">「観光スポットを調べようとしたら情報が多すぎて疲れた…」</div>
+      <div class="pain-q">「せっかく行くなら失敗したくない！」</div>
+    </div>
+
+    <p class="sub-text mt16">
+      そんな声をたくさんいただいたので、絶対にハズさない厳選スポットだけのマップを作りました。
+      観光地、グルメ、ホテル、全てが詰まった、これさえあれば完璧なMAPです。
+    </p>
+
+    <div class="mt24">
+      <img src="images/feature-scenery.jpg" alt="北海道の風景" class="img-slot">
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =====================================================
+     ③ 購入者からの感想
+     　　画像ファイル：images/review-1.jpg / review-2.jpg / review-3.jpg
+===================================================== -->
+<hr class="div">
+<section class="sec">
+  <div class="w">
+
+    <div class="icon-h">
+      <div class="av">💬</div>
+      <h2>購入者からの感想</h2>
+    </div>
+
+    <p class="sub-text">たくさんの方からメッセージをいただいています。</p>
+
+    <div class="review-grid">
+      <img src="images/review-1.jpg" alt="購入者の感想1" class="img-slot"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="img-placeholder" style="display:none; aspect-ratio:4/3;">
+        <span>images/review-1.jpg を入れると表示されます</span>
+      </div>
+
+      <img src="images/review-2.jpg" alt="購入者の感想2" class="img-slot"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="img-placeholder" style="display:none; aspect-ratio:4/3;">
+        <span>images/review-2.jpg を入れると表示されます</span>
+      </div>
+
+      <img src="images/review-3.jpg" alt="購入者の感想3" class="img-slot"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="img-placeholder" style="display:none; aspect-ratio:4/3;">
+        <span>images/review-3.jpg を入れると表示されます</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =====================================================
+     ④ お悩みリスト → 解決
+===================================================== -->
+<hr class="div">
+<section class="sec sec-bg">
+  <div class="w">
+
+    <div class="icon-h">
+      <div class="av">😩</div>
+      <h2>こんなことで<br>悩んでいませんか？</h2>
+    </div>
+
+    <ul class="check-list">
+      <li><span class="x">✗</span>北海道、大きすぎてどこに行っていいか分からない</li>
+      <li><span class="x">✗</span>現在地から近い良さそうなスポットに行きたい</li>
+      <li><span class="x">✗</span>旅行情報を見ても多すぎて地域ごとに絞れない</li>
+      <li><span class="x">✗</span>道民だけど、オススメの飲食店をまとめて知りたい</li>
+      <li><span class="x">✗</span>質の良いスポットだけが見やすくまとまっているものが欲しい</li>
+    </ul>
+
+    <div class="solution-box">
+      <div class="map-emoji">🗺️</div>
+      <p>「旅と北海道MAP」なら<br><strong>これが全て解決します！</strong></p>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =====================================================
+     ⑥ 3つの特徴
+     　　画像ファイル：feature-food.jpg / feature-map.jpg / feature-ramen.jpg
+===================================================== -->
+<hr class="div">
+<section class="sec">
+  <div class="w">
+
+    <h2 class="tc" style="font-size:22px; font-weight:800; margin-bottom:36px;">このMAPが選ばれる理由</h2>
+
+    <!-- 特徴1 -->
+    <div class="feat">
+      <div class="icon-h">
+        <div class="av">👑</div>
+        <h2>"道民がオススメするスポット"<br>だけのまとめ</h2>
+      </div>
+      <p>
+        オススメスポット「だけ」をピックアップ。今まであなたが旅行前のリサーチに費やしていた時間をゼロにします。本当に良いお店・スポットだけを厳選しています。
+      </p>
+
+      <!-- ▼ 画像スロット：images/feature-food.jpg ▼ -->
+      <img src="images/feature-food.jpg" alt="道民おすすめグルメ" class="img-slot"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="img-placeholder" style="display:none; aspect-ratio:4/3;">
+        <span>images/feature-food.jpg を入れると表示されます</span>
+      </div>
+    </div>
+
+    <!-- 特徴2 -->
+    <div class="feat">
+      <div class="icon-h">
+        <div class="av">📱</div>
+        <h2>スマホ1台で全て完結</h2>
+      </div>
+
+      <div class="points-box">
+        <div class="p-head">📍 MAP カテゴリ一覧</div>
+        <div class="p-row"><span class="em">🦀</span><div><div class="t">海鮮</div><div class="s">道内全域 / 厳選掲載</div></div></div>
+        <div class="p-row"><span class="em">🍶</span><div><div class="t">居酒屋</div><div class="s">道内全域 / 厳選掲載</div></div></div>
+        <div class="p-row"><span class="em">🍦</span><div><div class="t">カフェ・スイーツ</div><div class="s">道内全域 / 厳選掲載</div></div></div>
+        <div class="p-row"><span class="em">🍜</span><div><div class="t">ラーメン</div><div class="s">道内全域 / 厳選掲載</div></div></div>
+        <div class="p-row"><span class="em">🏔️</span><div><div class="t">観光スポット</div><div class="s">道内全域 / 厳選掲載</div></div></div>
+        <div class="p-row"><span class="em">♨️</span><div><div class="t">温泉・サウナ</div><div class="s">道内全域 / 厳選掲載</div></div></div>
+        <div class="p-row"><span class="em">🍛</span><div><div class="t">スープカレー</div><div class="s">道内全域 / 厳選掲載</div></div></div>
+        <div class="p-row"><span class="em">🛶</span><div><div class="t">アクティビティ</div><div class="s">道内全域 / 厳選掲載</div></div></div>
+        <div class="p-row"><span class="em">🍨</span><div><div class="t">シメパフェ</div><div class="s">道内全域 / 厳選掲載</div></div></div>
+      </div>
+
+      <p>
+        紙のガイドブックと違い、Googleマップで使えるのでいつでもどこでもすぐに使えます。現在地から最寄りのスポットを探すことも可能。北海道のどこにいてもスポット探しに困りません。
+      </p>
+
+      <!-- ▼ 画像スロット：images/feature-map.jpg ▼ -->
+      <img src="images/feature-map.jpg" alt="Googleマップのスクリーンショット" class="img-slot mt16"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="img-placeholder" style="display:none; aspect-ratio:3/4;">
+        <span>images/feature-map.jpg を入れると表示されます</span>
+      </div>
+    </div>
+
+    <!-- 特徴3 -->
+    <div class="feat">
+      <div class="feat-num">
+        <span class="n">3</span>
+        <h3>掲載数2000箇所以上</h3>
+      </div>
+      <p>
+        ピン留めの数は2000箇所以上。しかも<strong>買い切りなのでずっと使えます。</strong>
+        オーナー自身も日々使いながら新しいスポットを追加しているので、情報は常に最新です。
+        実際に行ったスポットや、評判の良いスポットをまとめています。
+      </p>
+
+      <!-- ▼ 画像スロット：images/feature-ramen.jpg ▼ -->
+      <img src="images/feature-ramen.jpg" alt="北海道グルメ" class="img-slot"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="img-placeholder" style="display:none; aspect-ratio:4/3;">
+        <span>images/feature-ramen.jpg を入れると表示されます</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =====================================================
+     ⑦ How to Use（使い方）
+     　　画像ファイル：how-to-buy.jpg / how-to-maps.jpg
+===================================================== -->
+<hr class="div">
+<section class="sec sec-bg">
+  <div class="w">
+
+    <h2 class="tc" style="font-size:22px; font-weight:800; margin-bottom:36px;">How to Use</h2>
+
+    <div class="how-step">
+      <div class="how-label">
+        <span class="n2">1/</span>
+        <h3>購入する</h3>
+      </div>
+      <p>
+        購入リンクから支払い画面に移動し、お支払いをお願いします。クレジットカードのみ対応です。<br>
+        支払い完了後にキーワードが表示されます。公式LINEにそのキーワードを送っていただくと、自動メッセージでMAPのURLが届きます。
+      </p>
+      <div style="margin-top:8px;"><a href="https://lin.ee/n2nNhqW" target="_blank" rel="noopener">👉 公式LINEはこちら</a></div>
+
+      <!-- ▼ 画像スロット：images/how-to-buy.jpg ▼ -->
+      <div class="mt16">
+        <img src="images/how-to-buy.jpg" alt="購入画面" class="img-slot"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="img-placeholder" style="display:none; aspect-ratio:16/9;">
+          <span>images/how-to-buy.jpg を入れると表示されます</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="how-step">
+      <div class="how-label">
+        <span class="n2">2/</span>
+        <h3>URLを受け取る</h3>
+      </div>
+      <p>
+        自動応答メッセージが届いたら、それぞれのURLをタップして全項目を追加していきます。次のステップで詳しく説明します。
+      </p>
+    </div>
+
+    <div class="how-step">
+      <div class="how-label">
+        <span class="n2">3/</span>
+        <h3>Googleマップに追加する</h3>
+      </div>
+      <p>
+        GoogleマップのURLを開いたら「フォローする」をタップ。メイン画面の「保存済み」→「フォローのリスト」に表示されます。目的に合わせてリストを切り替えながら使ってください。
+      </p>
+
+      <!-- ▼ 画像スロット：images/how-to-maps.jpg ▼ -->
+      <div class="mt16">
+        <img src="images/how-to-maps.jpg" alt="Googleマップ追加の手順" class="img-slot"
+             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="img-placeholder" style="display:none; aspect-ratio:3/4;">
+          <span>images/how-to-maps.jpg を入れると表示されます</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-wrap">
+      <a href="#price" class="btn-cta">今すぐMAPをゲットする！ 🙋</a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =====================================================
+     ⑨ お試し vs 有料版 比較表
+===================================================== -->
+<hr class="div">
+<section class="sec sec-teal">
+  <div class="w">
+
+    <div class="icon-h">
+      <div class="av">🆚</div>
+      <h2>お試し版 vs 有料版<br>何が違うの？</h2>
+    </div>
+
+    <p class="sub-text">お試し版は「まず体験してみたい」方向け。有料版はその全部入りです。</p>
+
+    <div style="overflow-x:auto; margin-top:16px;">
+      <table style="width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.07);">
+        <thead>
+          <tr>
+            <th style="padding:12px 10px;font-size:12px;color:#888;font-weight:600;text-align:left;border-bottom:2px solid #e5e5e5;background:#fafafa;"></th>
+            <th style="padding:12px 10px;font-size:12px;font-weight:700;text-align:center;border-bottom:2px solid #e5e5e5;background:#e6f9fa;color:#0a8a8e;">🔍 お試し版<br><span style="font-size:11px;font-weight:400;color:#aaa;">無料</span></th>
+            <th style="padding:12px 10px;font-size:12px;font-weight:700;text-align:center;border-bottom:2px solid var(--teal);background:var(--teal);color:#fff;">🗺️ 有料版<br><span style="font-size:11px;font-weight:400;opacity:.85;">¥1,299（買い切り）</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:12px 10px;font-size:13px;color:#555;border-bottom:1px solid #f0f0f0;">掲載スポット数</td>
+            <td style="padding:12px 10px;font-size:13px;text-align:center;border-bottom:1px solid #f0f0f0;color:#888;">15ヶ所</td>
+            <td style="padding:12px 10px;font-size:13px;text-align:center;border-bottom:1px solid #f0f0f0;font-weight:800;color:var(--teal-d);">2,000ヶ所以上</td>
+          </tr>
+          <tr style="background:#fafafa;">
+            <td style="padding:12px 10px;font-size:13px;color:#555;border-bottom:1px solid #f0f0f0;">エリア</td>
+            <td style="padding:12px 10px;font-size:13px;text-align:center;border-bottom:1px solid #f0f0f0;color:#888;">札幌市内のみ</td>
+            <td style="padding:12px 10px;font-size:13px;text-align:center;border-bottom:1px solid #f0f0f0;font-weight:800;color:var(--teal-d);">北海道全域</td>
+          </tr>
+          <tr>
+            <td style="padding:12px 10px;font-size:13px;color:#555;border-bottom:1px solid #f0f0f0;">ジャンル</td>
+            <td style="padding:12px 10px;font-size:13px;text-align:center;border-bottom:1px solid #f0f0f0;color:#888;">海鮮のみ</td>
+            <td style="padding:12px 10px;font-size:12px;text-align:center;border-bottom:1px solid #f0f0f0;font-weight:800;color:var(--teal-d);line-height:2;">
+              海鮮 / 居酒屋<br>
+              カフェ・スイーツ / ラーメン<br>
+              観光スポット / 温泉・サウナ<br>
+              スープカレー / アクティビティ / シメパフェ
+            </td>
+          </tr>
+          <tr style="background:#fafafa;">
+            <td style="padding:12px 10px;font-size:13px;color:#555;border-bottom:1px solid #f0f0f0;">随時スポット追加</td>
+            <td style="padding:12px 10px;font-size:18px;text-align:center;border-bottom:1px solid #f0f0f0;color:#ccc;">✗</td>
+            <td style="padding:12px 10px;font-size:18px;text-align:center;border-bottom:1px solid #f0f0f0;color:var(--teal);">✔</td>
+          </tr>
+          <tr>
+            <td style="padding:12px 10px;font-size:13px;color:#555;">使用期限</td>
+            <td style="padding:12px 10px;font-size:13px;text-align:center;color:#888;">なし</td>
+            <td style="padding:12px 10px;font-size:13px;text-align:center;font-weight:700;color:var(--teal-d);">なし（買い切り）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="background:#fff8e1;border:1.5px solid var(--yellow);border-radius:10px;padding:14px 16px;margin-top:20px;font-size:13px;line-height:1.7;">
+      💡 <strong>お試し版を使ってみて「もっと欲しい！」と思ったら、¥1,299でフル版にアップグレードできます。</strong>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =====================================================
+     ⑩ 価格・CTA
+===================================================== -->
+<section id="price" class="price-section">
+  <div class="w">
+    <p class="price-label">現在の販売価格は…</p>
+    <div class="price-big"><sup>¥</sup>1,299<span style="font-size:.35em; vertical-align:middle;">円</span></div>
+    <p class="price-note">買い切り・追加料金なし・スポット随時追加</p>
+
+    <ul class="price-features" style="list-style:none;">
+      <li><span class="ck">✔</span> 2000箇所以上の厳選スポット</li>
+      <li><span class="ck">✔</span> グルメ・観光・温泉など全ジャンル対応</li>
+      <li><span class="ck">✔</span> Googleマップでスマホから即使える</li>
+      <li><span class="ck">✔</span> 道民オーナーが日々スポットを追加</li>
+      <li><span class="ck">✔</span> 購入後すぐに使い始められる</li>
+    </ul>
+
+    <div class="cta-wrap" style="padding-top:0;">
+      <a href="https://buy.stripe.com/bJeaEYehI8571yK7xLes006" class="btn-cta">
+        今すぐMAPをゲットする！ 🙋
+        <small>クレジットカード決済・すぐに使えます</small>
+      </a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =====================================================
+     ⑪ お試しバナー
+===================================================== -->
+<div class="price-section" style="padding-top:0; padding-bottom:40px;">
+  <div class="w" style="text-align:center;">
+    <a href="https://line.me/R/oaMessage/@152kvhuh/?お試しMAP" target="_blank" rel="noopener"
+       style="display:inline-block;color:var(--teal-d);font-size:14px;font-weight:600;border:1.5px solid var(--teal);padding:11px 28px;border-radius:99px;text-decoration:none;background:var(--teal-bg);">
+      🔍 まずは無料でお試し版を見る
+    </a>
+    <p style="font-size:11px;color:#bbb;margin-top:8px;">※ LINEが開き「お試しMAP」が自動入力されます。送信するだけ。</p>
+  </div>
+</div>
+
+
+<!-- =====================================================
+     よくある質問（FAQ）
+===================================================== -->
+<hr class="div">
+<section class="sec">
+  <div class="w">
+
+    <h2 class="tc" style="font-size:22px; font-weight:800; margin-bottom:28px;">よくある質問</h2>
+
+    <div id="faqList">
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          iPhoneでも使えますか？<span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">はい、iPhone・Androidどちらでも使えます。GoogleマップアプリがインストールされたスマホであればOKです。</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          購入したら一生使えますか？<span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">はい、買い切りです。追加料金は一切かかりません。スポットは随時追加されるので、購入後も情報が増えていきます。</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          地図アプリはGoogleマップだけですか？<span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">はい、現在はGoogleマップ専用です。Googleマップを使い慣れていない方も簡単に使えるよう説明しています。</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          決済方法は何が使えますか？<span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">クレジットカード（VISA・Mastercard・JCB・American Express）に対応しています。</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          返金・キャンセルはできますか？<span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">デジタルコンテンツの性質上、購入後のキャンセル・返金は原則として承っておりません。ご不明な点は購入前にお問い合わせください。</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          家族や友人と共有できますか？<span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">ご自身のご利用はもちろんOKです。ただし、第三者への再配布や共有はご遠慮ください。</div>
+      </div>
+
+    </div>
+
+    <div class="guarantee mt24">
+      <div class="g-icon">🛡️</div>
+      <div>
+        <h4>安心してお試しください</h4>
+        <p>使い方が分からない場合は公式LINEでサポートします。購入後もしっかりフォローしますので、お気軽にご連絡ください。</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =====================================================
+     ⑫ メッセージ ＋ 写真グリッド
+     　　画像ファイル：photo-1.jpg 〜 photo-6.jpg
+===================================================== -->
+<hr class="div">
+<section class="sec">
+  <div class="w">
+
+    <h2 class="tc" style="font-size:22px; font-weight:800; margin-bottom:20px;">Message</h2>
+
+    <p class="msg-body">
+      販売開始以降、多くの方に使っていただき本当に嬉しいです。予定を立てずに遊びに来た方や、札幌在住の方のお店選びにも役立っています。絶対に後悔させませんので、ぜひ使ってみてください！
+    </p>
+
+    <!-- ▼ 写真グリッド：images/photo-1.jpg 〜 photo-6.jpg ▼ -->
+    <div class="photo-grid">
+      <div class="photo-cell"><img src="images/photo-1.jpg" alt="写真1"></div>
+      <div class="photo-cell"><img src="images/photo-2.jpg" alt="写真2"></div>
+      <div class="photo-cell"><img src="images/photo-3.jpg" alt="写真3"></div>
+      <div class="photo-cell"><img src="images/photo-4.jpg" alt="写真4"></div>
+      <div class="photo-cell"><img src="images/photo-5.jpg" alt="写真5"></div>
+      <div class="photo-cell"><img src="images/photo-6.jpg" alt="写真6"></div>
+    </div>
+
+    <div class="cta-wrap" style="padding-top:0;">
+      <a href="https://buy.stripe.com/bJeaEYehI8571yK7xLes006" class="btn-cta">今すぐMAPをゲットする！ 🙋</a>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =====================================================
+     ⑪ FOOTER
+     　　画像ファイル：images/avatar.jpg
+===================================================== -->
+<footer>
+  <div class="footer-av">
+    <img src="images/avatar.jpg" alt="tabito_hokkaido"
+         onerror="this.parentNode.innerHTML='🧑‍💻'">
+  </div>
+  <div class="footer-handle">
+    <a href="https://www.instagram.com/tabito_hokkaido" target="_blank" rel="noopener">@tabito_hokkaido</a>
+  </div>
+  <p style="font-size:13px; color:rgba(255,255,255,.5); margin-top:4px;">Instagram「旅と北海道」</p>
+
+  <p class="footer-copy">© 旅と北海道MAP. All rights reserved.</p>
+</footer>
+
+
+<script>
+  // FAQ アコーディオン
+  function toggleFaq(btn) {
+    btn.closest('.faq-item').classList.toggle('open');
+  }
+
+  // スクロールでスティッキーCTAバーを表示
+  const stickyBar = document.getElementById('stickyBar');
+  window.addEventListener('scroll', () => {
+    stickyBar.classList.toggle('show', window.scrollY > 400);
+  }, { passive: true });
+</script>
+
+</body>
+</html>
